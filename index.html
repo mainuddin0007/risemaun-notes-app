@@ -296,7 +296,7 @@
             const noteId = noteItem.dataset.noteId;
             if (e.target.classList.contains('delete-note-item-btn')) {
                 e.stopPropagation();
-                if (confirm("Delete this note?")) { let notes = getNotes().filter(n => n.id != noteId); saveNotes(notes); renderNotesInFolder(AppState.activeFolder); }
+                if (confirm(`Delete ${selectedFolders.length} folder(s)? Notes inside will become uncategorized.`)) {
             } else { openNote(noteId); }
         });
 
