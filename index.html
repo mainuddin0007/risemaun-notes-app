@@ -142,7 +142,7 @@
             </div>
         </div>
     </div>
-                <script>
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
         const getNotes = () => JSON.parse(localStorage.getItem('notebook-notes-v12') || '[]');
         const saveNotes = (notes) => localStorage.setItem('notebook-notes-v12', JSON.stringify(notes));
@@ -277,15 +277,14 @@
         deleteSelectedBtn.addEventListener('click', () => {
             const selectedFolders = Array.from(document.querySelectorAll('.folder-checkbox:checked')).map(cb => cb.closest('.folder-item').dataset.folderName);
             if (selectedFolders.length === 0) return;
-            if (confirm(`Delete ${selectedFolders.length} folder(s)? Notes inside will become uncategorized.`)) {
-                let folders = getFolders().filter(f => !selectedFolders.includes(f));
-                saveFolders(folders);
-                let notes = getNotes();
-                notes.forEach(note => { if (selectedFolders.includes(note.folder)) { note.folder = null; } });
-                saveNotes(notes);
-                renderFolders();
-                toggleManagementMode(false);
-            }
+            // Remove the confirm dialog - directly delete
+            let folders = getFolders().filter(f => !selectedFolders.includes(f));
+            saveFolders(folders);
+            let notes = getNotes();
+            notes.forEach(note => { if (selectedFolders.includes(note.folder)) { note.folder = null; } });
+            saveNotes(notes);
+            renderFolders();
+            toggleManagementMode(false);
         });
 
         document.getElementById('back-to-folders-modal-btn').addEventListener('click', () => { modalTitle.textContent = "Folders"; folderView.style.display = 'block'; noteListView.style.display = 'none'; });
@@ -296,15 +295,7 @@
             const noteId = noteItem.dataset.noteId;
             if (e.target.classList.contains('delete-note-item-btn')) {
                 e.stopPropagation();
-                if (confirm(`Delete ${selectedFolders.length} folder(s)? Notes inside will become uncategorized.`)) {
-    let folders = getFolders().filter(f => !selectedFolders.includes(f));
-    saveFolders(folders);
-    let notes = getNotes();
-    notes.forEach(note => { if (selectedFolders.includes(note.folder)) { note.folder = null; } });
-    saveNotes(notes);
-    renderFolders();
-    toggleManagementMode(false);
-                }
+                if (confirm("Delete this note?")) { let notes = getNotes().filter(n => n.id != noteId); saveNotes(notes); renderNotesInFolder(AppState.activeFolder); }
             } else { openNote(noteId); }
         });
 
