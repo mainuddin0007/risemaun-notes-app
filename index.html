@@ -297,6 +297,14 @@
             if (e.target.classList.contains('delete-note-item-btn')) {
                 e.stopPropagation();
                 if (confirm(`Delete ${selectedFolders.length} folder(s)? Notes inside will become uncategorized.`)) {
+    let folders = getFolders().filter(f => !selectedFolders.includes(f));
+    saveFolders(folders);
+    let notes = getNotes();
+    notes.forEach(note => { if (selectedFolders.includes(note.folder)) { note.folder = null; } });
+    saveNotes(notes);
+    renderFolders();
+    toggleManagementMode(false);
+                }
             } else { openNote(noteId); }
         });
 
